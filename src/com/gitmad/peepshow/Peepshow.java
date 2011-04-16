@@ -1,5 +1,15 @@
 package com.gitmad.peepshow;
 
+import java.text.DateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.Browser;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +39,7 @@ import com.gitmad.peepshow.view.Peep;
 import static com.gitmad.peepshow.utils.Messages.Error;
 import static com.gitmad.peepshow.utils.Messages.ShowErrorDialog;
 
+
 public class Peepshow extends Activity implements LocationListener {
     /** Called when the activity is first created. */
     private double m_lon, m_lat;
@@ -36,20 +47,12 @@ public class Peepshow extends Activity implements LocationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        startService(new Intent(this, MediaService.class));
 
-        final ListView list_view = (ListView) findViewById(R.id.peep_log);
         try
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-
-            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
-                    new Pair<String, String>("latitude", String.format("%f", m_lat)),
-                    new Pair<String, String>("longitude", String.format("%f", m_lon)));
-            final PeepListAdapter adapter = new PeepListAdapter(peeps);
-            list_view.setAdapter(adapter);
-            list_view.setOnItemClickListener(adapter);
         }
         catch (final Exception ex)
         {
@@ -58,26 +61,33 @@ public class Peepshow extends Activity implements LocationListener {
             /*startActivity(new Intent(this, AccountLoginActivity.class));
             finish();*/
         }
+
         
     }
 
-    @Override
     public void onLocationChanged(Location location) {
         this.m_lon = location.getLongitude();
         this.m_lat = location.getLatitude();
+        
+        final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+        final PeepListAdapter adapter = new PeepListAdapter(peeps);
+        final ListView list_view = (ListView) findViewById(R.id.peep_log);
+        list_view.setAdapter(adapter);
+        list_view.setOnItemClickListener(adapter);
+        
+        ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
     }
 
-    @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
     }
 
-    @Override
     public void onProviderEnabled(String s) {
 
     }
 
-    @Override
     public void onProviderDisabled(String s) {
 
     }

@@ -60,7 +60,7 @@ public final class Messages {
         final String caller = elements[3].getClassName();
         final Integer line_num = elements[3].getLineNumber();
         final String prefix = String.format("%s:%d", caller, line_num);
-        Log.wtf(prefix, message);
+        //Log.wtf(prefix, message);
     }
 
     public static void ShowErrorDialog(final Context context, final String message)
