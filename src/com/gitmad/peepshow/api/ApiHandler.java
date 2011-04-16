@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.util.Log;
 import android.util.Pair;
 import com.gitmad.peepshow.view.Peep;
 import com.google.gson.Gson;
@@ -42,8 +43,32 @@ public class ApiHandler
             protected <T> T handleResponse(InputStream response) {
                 return (T) new ArrayList<Peep>();
             }
-        };
-
+        },
+        SEND_AUDIO("get")
+        {
+        	 @Override
+             @SuppressWarnings({"unchecked"})
+             protected <T> T handleResponse(InputStream response) {
+        		 if(response.toString() == "error")
+        			 Log.v("ERROR","SEND AUDIO ERROR");
+        		 return null;
+        	 }
+        	
+        },
+        SEND_WEB("get")
+        {
+        	 @Override
+             @SuppressWarnings({"unchecked"})
+             protected <T> T handleResponse(InputStream response) {
+        		 if(response.toString() == "error")
+        			 Log.v("ERROR","SEND WEB ERROR");
+        		 return null;
+        	 }
+        	
+        },
+        
+        ;
+        
         private final String request_type;
         private API_ACTION(final String request_type)
         {
