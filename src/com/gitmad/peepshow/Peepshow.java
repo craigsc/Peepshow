@@ -41,13 +41,13 @@ public class Peepshow extends Activity implements LocationListener {
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-//            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
-//                new Pair<String, String>("latitude", String.format("%f", m_lat)),
-//                new Pair<String, String>("longitude", String.format("%f", m_lon)));
-//            final PeepListAdapter adapter = new PeepListAdapter(peeps);
-//            final ListView list_view = (ListView) findViewById(R.id.peep_log);
-//            list_view.setAdapter(adapter);
-//            list_view.setOnItemClickListener(adapter);
+            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+            final PeepListAdapter adapter = new PeepListAdapter(peeps);
+            final ListView list_view = (ListView) findViewById(R.id.peep_log);
+            list_view.setAdapter(adapter);
+            list_view.setOnItemClickListener(adapter);
         }
         catch (final Exception ex)
         {
@@ -165,12 +165,16 @@ public class Peepshow extends Activity implements LocationListener {
     {
         Intent next = new Intent();
         if (peep.getType().equalsIgnoreCase("audio")) {
-
+            final String url = ApiHandler.GetInstance().doAction(API_ACTION.SEARCH_YOUTUBE,
+                    new Pair<String, String>("", peep.getArtist()),
+                    new Pair<String, String>("", peep.getTitle()));
+            next = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(next);
         } else if (peep.getType().equalsIgnoreCase("web")) {
             next = new Intent(Intent.ACTION_VIEW, Uri.parse(peep.getUrl()));
+            startActivity(next);
         } else if (peep.getType().equalsIgnoreCase("video")) {
 
         }
-        startActivity(next);
     }
 }
