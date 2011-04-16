@@ -16,6 +16,8 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -47,6 +49,10 @@ public class Peepshow extends Activity {
         final ListView list_view = (ListView) findViewById(R.id.peep_log);
         try
         {
+            LocationProvider locationProvider = LocationManager.NETWORK_PROVIDER;
+        // Or use LocationManager.GPS_PROVIDER
+
+        Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
             final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS);
             final PeepListAdapter adapter = new PeepListAdapter(peeps);
             list_view.setAdapter(adapter);
