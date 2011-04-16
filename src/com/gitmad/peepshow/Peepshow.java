@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TwoLineListItem;
 import com.gitmad.peepshow.api.ApiHandler;
 import com.gitmad.peepshow.api.ApiHandler.API_ACTION;
@@ -99,12 +101,23 @@ public class Peepshow extends Activity implements LocationListener {
 
         public View getView(int position, View convertView, ViewGroup parent)
         {
-            TwoLineListItem view = (convertView != null) ? (TwoLineListItem) convertView : createView(parent);
-            bindView(view, peeps.get(position));
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = vi.inflate(R.layout.peep_row, null);
+            }
+            Peep peep = peeps.get(position);
+            if (peep != null) {
+                renderDescription(peep, view);
+
+            }
+            /*return v;
+            View view = (convertView != null) ? convertView : createView(parent);
+            bindView(view, peeps.get(position));*/
             return view;
         }
 
-        private TwoLineListItem createView(ViewGroup parent)
+        private View createView(ViewGroup parent)
         {
             TwoLineListItem item = (TwoLineListItem) inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
             item.getText2().setSingleLine();
@@ -123,14 +136,31 @@ public class Peepshow extends Activity implements LocationListener {
         }
     }
 
-    private void renderDescription(final Peep peep, final TwoLineListItem view)
+    private void renderDescription(final Peep peep, final View view)
     {
         if (peep.getType().equalsIgnoreCase("audio")) {
-            view.getText1().setText(String.format("%s - %s", peep.getArtist(), peep.getTitle()));
-            view.getText2().setText("votes: " + peep.getVotes());
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            TextView tt = (TextView) view.findViewById(R.id.toptext);
+            TextView bt = (TextView) view.findViewById(R.id.bottomtext);
+            if (icon != null) {
+
+            }
+            if (tt != null) {
+                  tt.setText(String.format("%s - %s", peep.getArtist(), peep.getTitle()));
+            }
+            if(bt != null){
+                  bt.setText("votes: " + peep.getVotes());
+            }
         } else if (peep.getType().equalsIgnoreCase("web")) {
-            view.getText1().setText(peep.getUrl());
-            view.getText2().setText("votes: " + peep.getVotes());
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            TextView tt = (TextView) view.findViewById(R.id.toptext);
+            TextView bt = (TextView) view.findViewById(R.id.bottomtext);
+            if (tt != null) {
+                  tt.setText(peep.getUrl());
+            }
+            if(bt != null){
+                  bt.setText("votes: " + peep.getVotes());
+            }
 
         } else if (peep.getType().equalsIgnoreCase("video")) {
 
