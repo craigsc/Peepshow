@@ -33,12 +33,6 @@ public class ApiHandler
 
     public static final Integer WEB_PORT = 80;
 
-    public static enum API_RESULT
-    {
-        RESULT_SUCCESS,
-        RESULT_EXCEPTION
-    }
-
     public static enum API_ACTION
     {
         GET_PEEPS("get")
