@@ -15,7 +15,7 @@ class Application(tornado.web.Application):
 	def __init__(self):
 		handlers = [
 			(r"/send/audio/(.+)/(.+)/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", UpdateAudioHandler),
-			(r"/send/web/(.+)/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", UpdateWebHandler),
+			(r"/send/web/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)/(.+)", UpdateWebHandler),
 			(r"/get/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", GetHandler),
 		]
 		settings = {
@@ -57,7 +57,7 @@ class UpdateAudioHandler(BaseHandler):
 		self.write('success')
 
 class UpdateWebHandler(BaseHandler):
-	def get(self, url, lat, lon):
+	def get(self, lat, lon, url):
 		if not url or not lat or not lon:
 			self.write('error')
 			return
