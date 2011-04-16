@@ -40,7 +40,7 @@ public class ApiHandler
 
     public static enum API_ACTION
     {
-        GET_PEEPS("get")
+        GET_PEEPS("get", null)
         {
             @Override
             @SuppressWarnings({"unchecked"})
@@ -50,15 +50,25 @@ public class ApiHandler
                 Collection<Peep> peep_col = GSON.fromJson(response_reader, response_type);
                 return (T) new ArrayList<Peep>(peep_col);
             }
+        },
+        SEND_AUDIO("send", "audio") {
+            @Override
+            @SuppressWarnings({"unchecked"})
+            protected <T> T handleResponse(InputStream response) {
+                return null;
+            }
         };
 
-        private final String request_type;
-        private API_ACTION(final String request_type)
+        private final String request_type, media_type;
+        private API_ACTION(final String request_type, final String media_type)
         {
             this.request_type = request_type;
+            this.media_type = media_type;
         }
 
         public String getRequestType() { return this.request_type; }
+
+        public String getMediaType() { return this.media_type; }
 
         protected boolean isEditAction() { return false; }
 
@@ -75,6 +85,9 @@ public class ApiHandler
         try
         {
             url_string += String.format("/%s", action.getRequestType());
+            if (action.getMediaType() != null)
+                url_string += String.format("/%s", action.getMediaType());
+
             String params = "";
             for (int i = 0; i < args.length; i++)
             {
