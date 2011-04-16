@@ -2,17 +2,22 @@ package com.gitmad.peepshow.api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.app.Activity;
 import android.util.Log;
 import android.util.Pair;
 import com.gitmad.peepshow.view.Peep;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import static com.gitmad.peepshow.utils.Messages.Debug;
 import static com.gitmad.peepshow.utils.Messages.Error;
@@ -41,7 +46,10 @@ public class ApiHandler
             @Override
             @SuppressWarnings({"unchecked"})
             protected <T> T handleResponse(InputStream response) {
-                return (T) new ArrayList<Peep>();
+                Reader response_reader = new InputStreamReader(response);
+                Type response_type = new TypeToken<Collection<Peep>>(){}.getType();
+                Collection<Peep> peep_col = GSON.fromJson(response_reader, response_type);
+                return (T) new ArrayList<Peep>(peep_col);
             }
         },
         SEND_AUDIO("get")
@@ -73,12 +81,9 @@ public class ApiHandler
         private API_ACTION(final String request_type)
         {
             this.request_type = request_type;
-
         }
 
         public String getRequestType() { return this.request_type; }
-
-        protected boolean hasParentAction() { return false; }
 
         protected boolean isEditAction() { return false; }
 
@@ -98,7 +103,6 @@ public class ApiHandler
             String params = "";
             for (int i = 0; i < args.length; i++)
             {
-                /*String separator = (i == 0 ? "?" : "&");*/
                 params += String.format("/%s", args[i].second);
             }
 
@@ -125,7 +129,6 @@ public class ApiHandler
                 final InputStream response = connection.getInputStream();
                 try
                 {
-                    connection.disconnect();
                     return (T) action.handleResponse(response);
                 }
                 catch (final Exception ex)
