@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content"
     android:padding="6dip">
     <ImageView
         android:id="@+id/icon"
@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:id="@+id/bottomtext"
             android:singleLine="true"
-            android:textSize="12px"
+            android:textSize="14px"
             android:textColor="#777777"
             android:ellipsize="marquee"
             android:gravity="right|bottom"
