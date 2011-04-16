@@ -4,17 +4,13 @@ package com.gitmad.peepshow.view;
  * TODO: Enter class description.
  */
 public class Peep {
-    public static enum PeepMediaType {
-        URL(),
-        VIDEO(),
-        MUSIC();
-        private PeepMediaType() { }
-    }
+    /*
+    "votes": 4, "artist": "test", "title": "testtitle", "lon": 65.400000000000006, "lat": 80.099999999999994, "type": "audio"
+     */
 
-    private final PeepMediaType type;
-    public Peep(final PeepMediaType type) {
-        this.type = type;
-    }
+    private long lon, lat;
+    private int votes;
+    private String artist, title, type;
 
-
+    public Peep() { }
 }
