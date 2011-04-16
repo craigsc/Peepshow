@@ -14,9 +14,9 @@ define("radius", default=0.03, type=float, help="distance for each quadrant")
 class Application(tornado.web.Application):
 	def __init__(self):
 		handlers = [
-			(r"/send/audio/(.+)/(.+)/([0-9]+\.[0-9]+)/([0-9]+\.[0-9]+)", UpdateAudioHandler),
-			(r"/send/web/(.+)/([0-9]+\.[0-9]+)/([0-9]+\.[0-9]+)", UpdateWebHandler),
-			(r"/get/([0-9]+\.[0-9]+)/([0-9]+\.[0-9]+)", GetHandler),
+			(r"/send/audio/(.+)/(.+)/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", UpdateAudioHandler),
+			(r"/send/web/(.+)/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", UpdateWebHandler),
+			(r"/get/(-?[0-9]+\.-?[0-9]+)/(-?[0-9]+\.-?[0-9]+)", GetHandler),
 		]
 		settings = {
 			"debug": True,
