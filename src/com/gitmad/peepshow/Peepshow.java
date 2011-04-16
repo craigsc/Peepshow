@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -23,8 +24,8 @@ import com.gitmad.peepshow.api.ApiHandler;
 import com.gitmad.peepshow.api.ApiHandler.API_ACTION;
 import com.gitmad.peepshow.view.Peep;
 
-import static com.gitmad.peepshow.utils.Messages.ShowErrorDialog;
 import static com.gitmad.peepshow.utils.Messages.Error;
+import static com.gitmad.peepshow.utils.Messages.ShowErrorDialog;
 
 public class Peepshow extends Activity implements LocationListener {
     /** Called when the activity is first created. */
@@ -38,7 +39,7 @@ public class Peepshow extends Activity implements LocationListener {
         try
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 
             final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
@@ -113,8 +114,7 @@ public class Peepshow extends Activity implements LocationListener {
 
         private void bindView(TwoLineListItem view, Peep peep)
         {
-            view.getText1().setText(peep.toString());
-            view.getText2().setText(peep.toString());
+            renderDescription(peep, view);
         }
 
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -123,12 +123,31 @@ public class Peepshow extends Activity implements LocationListener {
         }
     }
 
+    private void renderDescription(final Peep peep, final TwoLineListItem view)
+    {
+        if (peep.getType().equalsIgnoreCase("audio")) {
+            view.getText1().setText(String.format("%s - %s", peep.getArtist(), peep.getTitle()));
+            view.getText2().setText("votes: " + peep.getVotes());
+        } else if (peep.getType().equalsIgnoreCase("web")) {
+            view.getText1().setText(peep.getUrl());
+            view.getText2().setText("votes: " + peep.getVotes());
+
+        } else if (peep.getType().equalsIgnoreCase("video")) {
+
+        }
+
+    }
+
     private void startShow(Peep peep)
     {
         Intent next = new Intent();
-       /* next.setClass(this, Quest.class);
-        next.putExtra("quest", quest);
-        next.putExtra("current_sequence", 0);*/
+        if (peep.getType().equalsIgnoreCase("audio")) {
+
+        } else if (peep.getType().equalsIgnoreCase("web")) {
+            next = new Intent(Intent.ACTION_VIEW, Uri.parse(peep.getUrl()));
+        } else if (peep.getType().equalsIgnoreCase("video")) {
+
+        }
         startActivity(next);
     }
 }
