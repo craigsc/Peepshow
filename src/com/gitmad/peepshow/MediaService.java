@@ -19,6 +19,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.Browser;
 import android.util.Log;
+import android.util.Pair;
+
+import com.gitmad.peepshow.api.ApiHandler;
 
 
 
@@ -93,12 +96,10 @@ public class MediaService extends Service implements LocationListener {
             	long accessTime = mCur.getLong(Browser.HISTORY_PROJECTION_DATE_INDEX);
             	String encoded = java.net.URLEncoder.encode(url);
             	if(accessTime>(currentTime-fiveMinAgo)){
-//            		ApiHandler.GetInstance().doAction(ApiHandler.API_ACTION.SEND_WEB,
-//    						new Pair<String, String>("url", String.format("%f", url)),
-//    						new Pair<String, String>("latitude", String.format("%f", m_lat)),
-//    	                    new Pair<String, String>("longitude", String.format("%f", m_lon));
-//    						
-//    				);
+            		ApiHandler.GetInstance().doAction(ApiHandler.API_ACTION.SEND_WEB,
+    						new Pair<String, String>("url", String.format("%f", url)),
+    						new Pair<String, String>("latitude", String.format("%f", m_lat)),
+    	                    new Pair<String, String>("longitude", String.format("%f", m_lon)));
             		Log.v("titleIdx", title);
                 	Log.v("urlIdx", encoded);
                 	Log.v("accessTime", df.format(new Date(accessTime)));

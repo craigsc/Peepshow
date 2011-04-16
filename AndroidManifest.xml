@@ -23,16 +23,14 @@
 
 	
         <receiver 
-        	android:name=".MusicBroadcastReceiver"
-       		android:enabled="true"
-       		android:exported="false">
+        	android:name=".MusicBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.android.music.metachanged" />
                 <action android:name="com.android.music.playbackcomplete" />
                 <action android:name="com.android.music.playstatechanged" />
             </intent-filter>
         </receiver>
-        <service android:name=".MusicInfoFetcher" />
+        <service android:name=".MusicInfoFetcher" android:permission="com.gitmad.peepshow.service" />
         
         <receiver android:name=".Starter">
         	<intent-filter>
