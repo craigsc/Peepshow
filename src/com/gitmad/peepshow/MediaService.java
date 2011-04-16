@@ -101,7 +101,7 @@ public class MediaService extends Service {
 				*/
 				try {
 					// shutdown and start gps
-					locationManager.removeUpdates(myLocationListener); locationManager = null;
+					//locationManager.removeUpdates(myLocationListener); locationManager = null;
 					Thread.sleep(30000);
 					
 					
