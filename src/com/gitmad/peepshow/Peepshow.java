@@ -1,15 +1,5 @@
 package com.gitmad.peepshow;
 
-import java.text.DateFormat;
-import java.util.Date;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.provider.Browser;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +20,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TwoLineListItem;
 import com.gitmad.peepshow.api.ApiHandler;
 import com.gitmad.peepshow.api.ApiHandler.API_ACTION;
 import com.gitmad.peepshow.view.Peep;
@@ -53,6 +41,13 @@ public class Peepshow extends Activity implements LocationListener {
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+            final PeepListAdapter adapter = new PeepListAdapter(peeps);
+            final ListView list_view = (ListView) findViewById(R.id.peep_log);
+            list_view.setAdapter(adapter);
+            list_view.setOnItemClickListener(adapter);
         }
         catch (final Exception ex)
         {
@@ -127,19 +122,6 @@ public class Peepshow extends Activity implements LocationListener {
             return view;
         }
 
-        private View createView(ViewGroup parent)
-        {
-            TwoLineListItem item = (TwoLineListItem) inflater.inflate(android.R.layout.simple_list_item_2, parent, false);
-            item.getText2().setSingleLine();
-            item.getText2().setEllipsize(TextUtils.TruncateAt.END);
-            return item;
-        }
-
-        private void bindView(TwoLineListItem view, Peep peep)
-        {
-            renderDescription(peep, view);
-        }
-
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
             startShow(peeps.get(position));
@@ -150,6 +132,7 @@ public class Peepshow extends Activity implements LocationListener {
     {
         if (peep.getType().equalsIgnoreCase("audio")) {
             ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setImageResource(R.drawable.music_note);
             TextView tt = (TextView) view.findViewById(R.id.toptext);
             TextView bt = (TextView) view.findViewById(R.id.bottomtext);
             if (icon != null) {
@@ -163,6 +146,7 @@ public class Peepshow extends Activity implements LocationListener {
             }
         } else if (peep.getType().equalsIgnoreCase("web")) {
             ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setImageResource(R.drawable.world);
             TextView tt = (TextView) view.findViewById(R.id.toptext);
             TextView bt = (TextView) view.findViewById(R.id.bottomtext);
             if (tt != null) {
