@@ -47,37 +47,14 @@ public class Peepshow extends Activity implements LocationListener {
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
-                new Pair<String, String>("latitude", String.format("%f", m_lat)),
-                new Pair<String, String>("longitude", String.format("%f", m_lon)));
-            final PeepListAdapter adapter = new PeepListAdapter(peeps);
-            final ListView list_view = (ListView) findViewById(R.id.peep_log);
-            list_view.setAdapter(adapter);
-            list_view.setOnItemClickListener(adapter);
-            list_view.setOnItemLongClickListener(new OnItemLongClickListener(){
-            	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-    				//bzzz = (Vibrator) c.getSystemService(VIBRATOR_SERVICE);
-    				//bzzz.vibrate(100);
-    				Intent share = new Intent(Intent.ACTION_SEND);
-    				share.setType("text/plain");
-    				if(peeps.get(arg2).getType().equals("web")){
-    					share.putExtra(Intent.EXTRA_TEXT, peeps.get(arg2).getUrl());
-    				} else {
-    					share.putExtra(Intent.EXTRA_TEXT, "Hey, here's a great song you should look up: "+peeps.get(arg2).getArtist()+" - "+peeps.get(arg2).getTitle());
-    				}
-    				
-    				startActivity(Intent.createChooser(share, "Share Text"));
-    				return false;
-    			}
-            }
-            		
-            );
-            
-            
-            
-            
-            
-            this.peeps = peeps;
+//            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+//                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+//                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+//            final PeepListAdapter adapter = new PeepListAdapter(peeps);
+//            final ListView list_view = (ListView) findViewById(R.id.peep_log);
+//            list_view.setAdapter(adapter);
+//            list_view.setOnItemClickListener(adapter);
+//            this.peeps = peeps;
         }
         catch (final Exception ex)
         {
@@ -100,6 +77,23 @@ public class Peepshow extends Activity implements LocationListener {
         final ListView list_view = (ListView) findViewById(R.id.peep_log);
         list_view.setAdapter(adapter);
         list_view.setOnItemClickListener(adapter);
+        list_view.setOnItemLongClickListener(new OnItemLongClickListener(){
+        	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				//bzzz = (Vibrator) c.getSystemService(VIBRATOR_SERVICE);
+				//bzzz.vibrate(100);
+				Intent share = new Intent(Intent.ACTION_SEND);
+				share.setType("text/plain");
+				if(peeps.get(arg2).getType().equals("web")){
+					share.putExtra(Intent.EXTRA_TEXT, peeps.get(arg2).getUrl());
+				} else {
+					share.putExtra(Intent.EXTRA_TEXT, "Hey, here's a great song you should look up: "+peeps.get(arg2).getArtist()+" - "+peeps.get(arg2).getTitle());
+				}
+				
+				startActivity(Intent.createChooser(share, "Share Text"));
+				return false;
+			}
+        });
+        this.peeps = peeps;
     }
 
     public void onStatusChanged(String s, int i, Bundle bundle) {
@@ -231,6 +225,28 @@ public class Peepshow extends Activity implements LocationListener {
                 Random gen = new Random(System.currentTimeMillis());
                 int index = gen.nextInt(peeps.size());
                 startShow(peeps.get(index));
+                break;
+            case R.id.refresh:
+            	try
+                {
+                    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+//                    final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+//                        new Pair<String, String>("latitude", String.format("%f", m_lat)),
+//                        new Pair<String, String>("longitude", String.format("%f", m_lon)));
+//                    final PeepListAdapter adapter = new PeepListAdapter(peeps);
+//                    final ListView list_view = (ListView) findViewById(R.id.peep_log);
+//                    list_view.setAdapter(adapter);
+//                    list_view.setOnItemClickListener(adapter);
+//                    this.peeps = peeps;
+                }
+                catch (final Exception ex)
+                {
+                    ShowErrorDialog(this, "SHIT DUN BEEN CRAZY");
+                    Error(ex.getMessage());
+                    /*startActivity(new Intent(this, AccountLoginActivity.class));
+                    finish();*/
+                }
                 break;
         }
 
