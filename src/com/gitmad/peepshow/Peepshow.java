@@ -16,6 +16,7 @@ public class Peepshow extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         startService(new Intent(this, MediaService.class));
         Cursor mCur = managedQuery(Browser.BOOKMARKS_URI,
         		Browser.HISTORY_PROJECTION, null, null, null
@@ -39,8 +40,6 @@ public class Peepshow extends Activity {
                 
             }
         }
-
-        
 
         
     }

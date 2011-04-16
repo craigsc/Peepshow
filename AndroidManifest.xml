@@ -5,7 +5,13 @@
       android:versionName="1.0">
 
 
+	<permission android:name="com.gitmad.peepshow.service" android:protectionLevel="signature" />
+	<uses-permission android:name="com.gitmad.peepshow.service" />
+    <uses-permission android:name="android.permission.INTERNET" />	
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <service android:name="com.android.music.MediaPlaybackService" android:exported="true" />
         <activity android:name=".Peepshow"
                   android:label="@string/app_name">
             <intent-filter>
@@ -13,7 +19,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-	<service android:name="MediaService" />
+
+	
+        <receiver 
+        	android:name=".MusicBroadcastReceiver"
+       		android:enabled="true"
+       		android:exported="false">
+            <intent-filter>
+                <action android:name="com.android.music.metachanged" />
+                <action android:name="com.android.music.playbackcomplete" />
+                <action android:name="com.android.music.playstatechanged" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".MusicInfoFetcher" />
+        
+        <receiver android:name=".Starter">
+        	<intent-filter>
+        		<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+        	</intent-filter>
+        </receiver>
+        
+        <service android:name="MediaService" />
+		
     </application>
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest>
