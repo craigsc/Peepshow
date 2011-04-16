@@ -41,13 +41,13 @@ public class Peepshow extends Activity implements LocationListener {
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
-                new Pair<String, String>("latitude", String.format("%f", m_lat)),
-                new Pair<String, String>("longitude", String.format("%f", m_lon)));
-            final PeepListAdapter adapter = new PeepListAdapter(peeps);
-            final ListView list_view = (ListView) findViewById(R.id.peep_log);
-            list_view.setAdapter(adapter);
-            list_view.setOnItemClickListener(adapter);
+//            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+//                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+//                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+//            final PeepListAdapter adapter = new PeepListAdapter(peeps);
+//            final ListView list_view = (ListView) findViewById(R.id.peep_log);
+//            list_view.setAdapter(adapter);
+//            list_view.setOnItemClickListener(adapter);
         }
         catch (final Exception ex)
         {
@@ -61,6 +61,7 @@ public class Peepshow extends Activity implements LocationListener {
     }
 
     public void onLocationChanged(Location location) {
+    	((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
         this.m_lon = location.getLongitude();
         this.m_lat = location.getLatitude();
         
@@ -71,8 +72,6 @@ public class Peepshow extends Activity implements LocationListener {
         final ListView list_view = (ListView) findViewById(R.id.peep_log);
         list_view.setAdapter(adapter);
         list_view.setOnItemClickListener(adapter);
-        
-        ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
     }
 
     public void onStatusChanged(String s, int i, Bundle bundle) {

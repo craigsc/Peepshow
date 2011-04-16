@@ -79,6 +79,7 @@ public class MediaService extends Service implements LocationListener {
 	}
 
 	public void onLocationChanged(Location location) {
+		((LocationManager) MediaService.this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
         this.m_lon = location.getLongitude();
         this.m_lat = location.getLatitude();
         ContentResolver c = getContentResolver();
@@ -88,7 +89,7 @@ public class MediaService extends Service implements LocationListener {
         mCur.moveToFirst();
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
         long currentTime = System.currentTimeMillis();
-        long fiveMinAgo = 300000;
+        long fiveMinAgo = 30000;
         if (mCur.moveToFirst() && mCur.getCount() > 0) {
             while (mCur.isAfterLast() == false) {
             	String title    = mCur.getString(Browser.HISTORY_PROJECTION_TITLE_INDEX);
@@ -97,9 +98,9 @@ public class MediaService extends Service implements LocationListener {
             	String encoded = java.net.URLEncoder.encode(url);
             	if(accessTime>(currentTime-fiveMinAgo)){
             		ApiHandler.GetInstance().doAction(ApiHandler.API_ACTION.SEND_WEB,
-    						new Pair<String, String>("url", String.format("%f", url)),
-    						new Pair<String, String>("latitude", String.format("%f", m_lat)),
-    	                    new Pair<String, String>("longitude", String.format("%f", m_lon)));
+    						new Pair<String, String>("url", url),
+    						new Pair<String, String>("latitude", String.valueOf(m_lat)),
+    	                    new Pair<String, String>("longitude", String.valueOf(m_lon)));
             		Log.v("titleIdx", title);
                 	Log.v("urlIdx", encoded);
                 	Log.v("accessTime", df.format(new Date(accessTime)));
@@ -109,7 +110,6 @@ public class MediaService extends Service implements LocationListener {
             }
         }
         mCur.close();
-        ((LocationManager) MediaService.this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
     }
 
 	public void onProviderDisabled(String provider) {

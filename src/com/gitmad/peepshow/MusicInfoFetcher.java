@@ -8,38 +8,39 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
+
 import com.gitmad.peepshow.api.ApiHandler;
 import com.gitmad.peepshow.api.ApiHandler.API_ACTION;
 import com.gitmad.peepshow.exceptions.IncompleteMetadataException;
 import com.gitmad.peepshow.exceptions.InvalidMetadataException;
 
-public class MusicInfoFetcher extends Service {
+public class MusicInfoFetcher extends Service implements LocationListener {
     static final String FROM_MUSIC_STATUS_FETCHER =
         "com.gitmad.peepshow.service.from_music_status_fetcher";
     static final String BROADCAST_ACTION =
         "com.gitmad.peepshow.service.broadcast_action";
+    private Track t;
+
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         Log.i("SHIT BALLS", "FUCK MY TITTIES");
-        Track t;
         try {
             t = new Track(intent, this);
-            ApiHandler.GetInstance().doAction(API_ACTION.SEND_AUDIO,
-                    new Pair<String, String>("artist", t.getArtist()),
-                    new Pair<String, String>("title", t.getTrack()),
-                    new Pair<String, String>("lat", String.format("%f", 0.0F)),
-                    new Pair<String, String>("lon", String.format("%f", 0.0F)));
-            System.out.println(t.getArtist());
+            LocationManager locationManager = (LocationManager) MusicInfoFetcher.this.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MusicInfoFetcher.this);
         } catch (InvalidMetadataException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -47,6 +48,30 @@ public class MusicInfoFetcher extends Service {
         // TODO Auto-generated method stub
         return null;
     }
+
+	public void onLocationChanged(Location location) {
+		((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
+		ApiHandler.GetInstance().doAction(API_ACTION.SEND_AUDIO,
+				new Pair<String, String>("artist", t.getArtist()),
+				new Pair<String, String>("title", t.getTrack()),
+				new Pair<String, String>("lat", String.valueOf(location.getLatitude())),
+				new Pair<String, String>("lon", String.valueOf(location.getLongitude())));
+	}
+
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
