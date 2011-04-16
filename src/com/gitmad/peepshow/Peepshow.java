@@ -203,6 +203,18 @@ public class Peepshow extends Activity implements LocationListener {
                 int index = gen.nextInt(peeps.size());
                 startShow(peeps.get(index));
                 break;
+            case R.id.refresh:
+                LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+                    new Pair<String, String>("latitude", String.format("%f", m_lat)),
+                    new Pair<String, String>("longitude", String.format("%f", m_lon)));
+                final PeepListAdapter adapter = new PeepListAdapter(peeps);
+                final ListView list_view = (ListView) findViewById(R.id.peep_log);
+                list_view.setAdapter(adapter);
+                list_view.setOnItemClickListener(adapter);
+                this.peeps = peeps;
+                break;
         }
 
         return super.onOptionsItemSelected(item);
