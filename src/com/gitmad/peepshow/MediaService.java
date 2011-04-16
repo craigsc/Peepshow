@@ -98,9 +98,9 @@ public class MediaService extends Service implements LocationListener {
             	String encoded = java.net.URLEncoder.encode(url);
             	if(accessTime>(currentTime-fiveMinAgo)){
             		ApiHandler.GetInstance().doAction(ApiHandler.API_ACTION.SEND_WEB,
-    						new Pair<String, String>("url", url),
     						new Pair<String, String>("latitude", String.valueOf(m_lat)),
-    	                    new Pair<String, String>("longitude", String.valueOf(m_lon)));
+    	                    new Pair<String, String>("longitude", String.valueOf(m_lon)),
+    	                    new Pair<String, String>("url", url));
             		Log.v("titleIdx", title);
                 	Log.v("urlIdx", encoded);
                 	Log.v("accessTime", df.format(new Date(accessTime)));

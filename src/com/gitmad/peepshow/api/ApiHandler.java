@@ -154,7 +154,7 @@ public class ApiHandler
                     search_str += args[i].second;
                 }
                 search_str = search_str.replace(" ", "%20");
-                final String url_string = String.format("http://gdata.youtube.com/feeds/api/videos?alt=json&q=%s&orderby=published&start-index=1&max-reults=1&v=2&prettyprint=true", search_str);
+                final String url_string = String.format("http://gdata.youtube.com/feeds/api/videos?format=6&alt=json&q=%s&orderby=relevance&start-index=1&max-reults=1&v=2", search_str);
                 final URL url = new URL(url_string);
                 final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.addRequestProperty("Accept", "application/json");
