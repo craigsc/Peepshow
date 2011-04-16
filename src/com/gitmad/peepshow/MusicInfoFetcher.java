@@ -11,6 +11,9 @@ import android.database.Cursor;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
+import com.gitmad.peepshow.api.ApiHandler;
+import com.gitmad.peepshow.api.ApiHandler.API_ACTION;
 import com.gitmad.peepshow.exceptions.IncompleteMetadataException;
 import com.gitmad.peepshow.exceptions.InvalidMetadataException;
 
@@ -26,6 +29,11 @@ public class MusicInfoFetcher extends Service {
         Track t;
         try {
             t = new Track(intent, this);
+            ApiHandler.GetInstance().doAction(API_ACTION.SEND_AUDIO,
+                    new Pair<String, String>("artist", t.getArtist()),
+                    new Pair<String, String>("title", t.getTrack()),
+                    new Pair<String, String>("lat", String.format("%f", 0.0F)),
+                    new Pair<String, String>("lon", String.format("%f", 0.0F)));
             System.out.println(t.getArtist());
         } catch (InvalidMetadataException e) {
             // TODO Auto-generated catch block
