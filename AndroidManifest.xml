@@ -20,7 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".MusicBroadcastReceiver">
+
+	
+        <receiver 
+        	android:name=".MusicBroadcastReceiver"
+       		android:enabled="true"
+       		android:exported="false">
             <intent-filter>
                 <action android:name="com.android.music.metachanged" />
                 <action android:name="com.android.music.playbackcomplete" />
@@ -28,6 +33,16 @@
             </intent-filter>
         </receiver>
         <service android:name=".MusicInfoFetcher" />
-
+        
+        <receiver android:name=".Starter">
+        	<intent-filter>
+        		<action android:name="android.intent.action.BOOT_COMPLETED"></action>
+        	</intent-filter>
+        </receiver>
+        
+        <service android:name="MediaService" />
+		
     </application>
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest>

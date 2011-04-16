@@ -1,5 +1,15 @@
 package com.gitmad.peepshow;
 
+import java.text.DateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.Browser;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +37,7 @@ import com.gitmad.peepshow.view.Peep;
 import static com.gitmad.peepshow.utils.Messages.Error;
 import static com.gitmad.peepshow.utils.Messages.ShowErrorDialog;
 
+
 public class Peepshow extends Activity implements LocationListener {
     /** Called when the activity is first created. */
     private double m_lon, m_lat;
@@ -34,6 +45,8 @@ public class Peepshow extends Activity implements LocationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        startService(new Intent(this, MediaService.class));
+
         try
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -46,6 +59,7 @@ public class Peepshow extends Activity implements LocationListener {
             /*startActivity(new Intent(this, AccountLoginActivity.class));
             finish();*/
         }
+
         
     }
 

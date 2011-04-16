@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import android.app.Activity;
+import android.util.Log;
 import android.util.Pair;
 import com.gitmad.peepshow.view.Peep;
 import com.google.gson.Gson;
@@ -51,16 +52,32 @@ public class ApiHandler
                 return (T) new ArrayList<Peep>(peep_col);
             }
         },
+
         SEND_AUDIO("send", "audio") {
             @Override
             @SuppressWarnings({"unchecked"})
             protected <T> T handleResponse(InputStream response) {
-                return null;
-            }
+        		 if(response.toString() == "error")
+        			 Log.v("ERROR","SEND AUDIO ERROR");
+        		 return null;
+        	 }
+        },
+        
+        SEND_WEB("send","web")
+        {
+        	 @Override
+             @SuppressWarnings({"unchecked"})
+             protected <T> T handleResponse(InputStream response) {
+        		 if(response.toString() == "error")
+        			 Log.v("ERROR","SEND WEB ERROR");
+        		 return null;
+        	 }
+        	
         };
 
         private final String request_type, media_type;
         private API_ACTION(final String request_type, final String media_type)
+
         {
             this.request_type = request_type;
             this.media_type = media_type;
