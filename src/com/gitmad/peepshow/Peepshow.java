@@ -2,6 +2,7 @@ package com.gitmad.peepshow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +34,7 @@ import static com.gitmad.peepshow.utils.Messages.ShowErrorDialog;
 public class Peepshow extends Activity implements LocationListener {
     /** Called when the activity is first created. */
     private double m_lon, m_lat;
+    private ArrayList<Peep> peeps;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,7 @@ public class Peepshow extends Activity implements LocationListener {
             final ListView list_view = (ListView) findViewById(R.id.peep_log);
             list_view.setAdapter(adapter);
             list_view.setOnItemClickListener(adapter);
+            this.peeps = peeps;
         }
         catch (final Exception ex)
         {
@@ -56,12 +61,10 @@ public class Peepshow extends Activity implements LocationListener {
             /*startActivity(new Intent(this, AccountLoginActivity.class));
             finish();*/
         }
-
-        
     }
 
     public void onLocationChanged(Location location) {
-    	((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
+        ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
         this.m_lon = location.getLongitude();
         this.m_lat = location.getLatitude();
         
@@ -115,9 +118,6 @@ public class Peepshow extends Activity implements LocationListener {
                 renderDescription(peep, view);
 
             }
-            /*return v;
-            View view = (convertView != null) ? convertView : createView(parent);
-            bindView(view, peeps.get(position));*/
             return view;
         }
 
@@ -134,14 +134,11 @@ public class Peepshow extends Activity implements LocationListener {
             icon.setImageResource(R.drawable.music_note);
             TextView tt = (TextView) view.findViewById(R.id.toptext);
             TextView bt = (TextView) view.findViewById(R.id.bottomtext);
-            if (icon != null) {
-
-            }
             if (tt != null) {
-                  tt.setText(String.format("%s - %s", peep.getArtist(), peep.getTitle()));
+                tt.setText(String.format("%s - %s", peep.getArtist(), peep.getTitle()));
             }
             if(bt != null){
-                  bt.setText("votes: " + peep.getVotes());
+                bt.setText("rating: " + peep.getVotes());
             }
         } else if (peep.getType().equalsIgnoreCase("web")) {
             ImageView icon = (ImageView) view.findViewById(R.id.icon);
@@ -152,11 +149,20 @@ public class Peepshow extends Activity implements LocationListener {
                   tt.setText(peep.getUrl());
             }
             if(bt != null){
-                  bt.setText("votes: " + peep.getVotes());
+                  bt.setText("rating: " + peep.getVotes());
             }
 
         } else if (peep.getType().equalsIgnoreCase("video")) {
-
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setImageResource(R.drawable.video);
+            TextView tt = (TextView) view.findViewById(R.id.toptext);
+            TextView bt = (TextView) view.findViewById(R.id.bottomtext);
+            if (tt != null) {
+                tt.setText(String.format("%s", peep.getTitle()));
+            }
+            if(bt != null){
+                bt.setText("rating: " + peep.getVotes());
+            }
         }
 
     }
@@ -174,7 +180,31 @@ public class Peepshow extends Activity implements LocationListener {
             next = new Intent(Intent.ACTION_VIEW, Uri.parse(peep.getUrl()));
             startActivity(next);
         } else if (peep.getType().equalsIgnoreCase("video")) {
-
+            next = new Intent(Intent.ACTION_VIEW, Uri.parse(peep.getUrl()));
+            startActivity(next);
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.stumble:
+                Random gen = new Random(System.currentTimeMillis());
+                int index = gen.nextInt(peeps.size());
+                startShow(peeps.get(index));
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

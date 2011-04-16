@@ -4,13 +4,14 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:background="@drawable/bg">
-	<TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24px"
-            android:gravity="center_horizontal"
-            android:text="Automatic Geospatial Temporal Crowdsourcing"
-            android:textStyle="italic|bold" />
+
+    <TextView android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:textSize="20px"
+              android:gravity="center_horizontal"
+              android:text="Peek-A-Boo, I See You!"
+              android:textStyle="italic|bold" />
+
     <ListView android:id="@+id/peep_log"
               android:layout_width="fill_parent"
               android:layout_height="0dip"
