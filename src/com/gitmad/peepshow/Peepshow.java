@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -52,6 +54,29 @@ public class Peepshow extends Activity implements LocationListener {
             final ListView list_view = (ListView) findViewById(R.id.peep_log);
             list_view.setAdapter(adapter);
             list_view.setOnItemClickListener(adapter);
+            list_view.setOnItemLongClickListener(new OnItemLongClickListener(){
+            	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+    				//bzzz = (Vibrator) c.getSystemService(VIBRATOR_SERVICE);
+    				//bzzz.vibrate(100);
+    				Intent share = new Intent(Intent.ACTION_SEND);
+    				share.setType("text/plain");
+    				if(peeps.get(arg2).getType().equals("web")){
+    					share.putExtra(Intent.EXTRA_TEXT, peeps.get(arg2).getUrl());
+    				} else {
+    					share.putExtra(Intent.EXTRA_TEXT, "Hey, here's a great song you should look up: "+peeps.get(arg2).getArtist()+" - "+peeps.get(arg2).getTitle());
+    				}
+    				
+    				startActivity(Intent.createChooser(share, "Share Text"));
+    				return false;
+    			}
+            }
+            		
+            );
+            
+            
+            
+            
+            
             this.peeps = peeps;
         }
         catch (final Exception ex)
@@ -119,6 +144,10 @@ public class Peepshow extends Activity implements LocationListener {
 
             }
             return view;
+        }
+        
+        public List<Peep> getPeeps() {
+        	return peeps;
         }
 
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
