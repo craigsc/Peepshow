@@ -49,7 +49,7 @@ class UpdateAudioHandler(BaseHandler):
 		if not artist or not title or not lat or not lon:
 			self.write('error')
 			return
-			peep = self.db.peeps.find_one({'artist': artist, 'gps': {'$within': {"$center": [[float(lat), float(lon)], options.radius]}}, 'title': title}, {'_id': 1})
+		peep = self.db.peeps.find_one({'type': 'audio', 'artist': artist, 'gps': {'$within': {"$center": [[float(lat), float(lon)], options.radius]}}, 'title': title}, {'_id': 1})
 		if peep:
 			self.db.peeps.update({'_id': peep['_id']}, {'$inc': {'votes': 1}})
 		else :
@@ -61,11 +61,11 @@ class UpdateWebHandler(BaseHandler):
 		if not url or not lat or not lon:
 			self.write('error')
 			return
-		peep = self.db.peeps.find_one({'url': url, 'gps': {'$within': {"$center": [[float(lat), float(lon)], options.radius]}}}, {'_id': 1})
+		peep = self.db.peeps.find_one({'type': 'web', 'url': url, 'gps': {'$within': {"$center": [[float(lat), float(lon)], options.radius]}}}, {'_id': 1})
 		if peep:
 			self.db.peeps.update({'_id': peep['_id']}, {'$inc': {'votes': 1}})
 		else:
-			self.db.peeps.insert({'gps': [float(lat), float(lon)], 'url': url, 'votes': 1})
+			self.db.peeps.insert({'type': 'web', 'gps': [float(lat), float(lon)], 'url': url, 'votes': 1})
 		self.write('success')
 		
 if __name__ == "__main__":

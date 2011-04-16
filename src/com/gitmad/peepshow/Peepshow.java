@@ -34,20 +34,10 @@ public class Peepshow extends Activity implements LocationListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        final ListView list_view = (ListView) findViewById(R.id.peep_log);
         try
         {
             LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-
-            final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
-                    new Pair<String, String>("latitude", String.format("%f", m_lat)),
-                    new Pair<String, String>("longitude", String.format("%f", m_lon)));
-            final PeepListAdapter adapter = new PeepListAdapter(peeps);
-            list_view.setAdapter(adapter);
-            list_view.setOnItemClickListener(adapter);
         }
         catch (final Exception ex)
         {
@@ -59,23 +49,29 @@ public class Peepshow extends Activity implements LocationListener {
         
     }
 
-    @Override
     public void onLocationChanged(Location location) {
         this.m_lon = location.getLongitude();
         this.m_lat = location.getLatitude();
+        
+        final ArrayList<Peep> peeps = ApiHandler.GetInstance().doAction(API_ACTION.GET_PEEPS,
+                new Pair<String, String>("latitude", String.format("%f", m_lat)),
+                new Pair<String, String>("longitude", String.format("%f", m_lon)));
+        final PeepListAdapter adapter = new PeepListAdapter(peeps);
+        final ListView list_view = (ListView) findViewById(R.id.peep_log);
+        list_view.setAdapter(adapter);
+        list_view.setOnItemClickListener(adapter);
+        
+        ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE)).removeUpdates(this);
     }
 
-    @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
     }
 
-    @Override
     public void onProviderEnabled(String s) {
 
     }
 
-    @Override
     public void onProviderDisabled(String s) {
 
     }
